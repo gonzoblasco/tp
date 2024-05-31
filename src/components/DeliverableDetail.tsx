@@ -14,7 +14,12 @@ interface Deliverable {
   endDate: string;
 }
 
-const formatDate = (date: string) => {
+/**
+ * Formats a date string into YYYY-MM-DD format.
+ * @param {string} date - The date string to format.
+ * @returns {string} The formatted date string.
+ */
+const formatDate = (date: string): string => {
   const d = new Date(date);
   const month = `0${d.getMonth() + 1}`.slice(-2);
   const day = `0${d.getDate()}`.slice(-2);
@@ -22,7 +27,11 @@ const formatDate = (date: string) => {
   return `${year}-${month}-${day}`;
 };
 
-const DeliverableDetail: React.FC = () => {
+/**
+ * Component for displaying and editing a deliverable's details.
+ * @returns {JSX.Element} The DeliverableDetail component.
+ */
+const DeliverableDetail: React.FC = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<Deliverable>();

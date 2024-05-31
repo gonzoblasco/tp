@@ -13,6 +13,10 @@ interface Deliverable {
   endDate: string;
 }
 
+/**
+ * Fetches the list of deliverables from the API.
+ * @returns {Promise<Deliverable[]>} A promise that resolves to an array of deliverables.
+ */
 export const fetchDeliverables = async (): Promise<Deliverable[]> => {
   const response = await fetch(API_BASE_URL, {
     method: 'GET',
@@ -30,6 +34,11 @@ export const fetchDeliverables = async (): Promise<Deliverable[]> => {
   return data.data;
 };
 
+/**
+ * Fetches a deliverable by its ID from the API.
+ * @param {string} id - The ID of the deliverable.
+ * @returns {Promise<Deliverable>} A promise that resolves to a deliverable object.
+ */
 export const fetchDeliverableById = async (id: string): Promise<Deliverable> => {
   const response = await fetch(`${API_BASE_URL}/${id}`, {
     method: 'GET',
@@ -47,6 +56,12 @@ export const fetchDeliverableById = async (id: string): Promise<Deliverable> => 
   return data.data;
 };
 
+/**
+ * Updates a deliverable by its ID in the API.
+ * @param {string} id - The ID of the deliverable.
+ * @param {Deliverable} data - The data to update the deliverable with.
+ * @returns {Promise<Deliverable>} A promise that resolves to the updated deliverable object.
+ */
 export const updateDeliverable = async (id: string, data: Deliverable): Promise<Deliverable> => {
   const response = await fetch(`${API_BASE_URL}/${id}`, {
     method: 'POST',

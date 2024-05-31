@@ -13,7 +13,11 @@ interface Deliverable {
   endDate: string;
 }
 
-const DeliverablesList: React.FC = () => {
+/**
+ * Component for displaying a list of deliverables.
+ * @returns {JSX.Element} The DeliverablesList component.
+ */
+const DeliverablesList: React.FC = (): JSX.Element => {
   const { data, error, isLoading } = useQuery<Deliverable[], Error>('deliverables', fetchDeliverables);
 
   if (isLoading) {
