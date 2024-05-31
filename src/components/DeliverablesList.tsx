@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { getDeliverables } from '../api';
+import { useQuery } from 'react-query';
+import { fetchDeliverables } from '../api';
 
 interface Deliverable {
   id: string;
@@ -13,34 +14,14 @@ interface Deliverable {
 }
 
 const DeliverablesList: React.FC = () => {
-  const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading } = useQuery<Deliverable[], Error>('deliverables', fetchDeliverables);
 
-  useEffect(() => {
-    const fetchDeliverables = async () => {
-      try {
-        const data = await getDeliverables();
-        if (Array.isArray(data)) {
-          setDeliverables(data);
-        } else {
-          setError('API response is not an array');
-        }
-      } catch (error) {
-        setError('Failed to fetch deliverables');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDeliverables();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div>{error.message}</div>;
   }
 
   return (
@@ -59,7 +40,7 @@ const DeliverablesList: React.FC = () => {
         </tr>
         </thead>
         <tbody className="text-gray-700">
-        {deliverables.map((deliverable) => (
+        {data?.map((deliverable) => (
           <tr key={deliverable.id} className="hover:bg-gray-100">
             <td className="text-center py-2 border">{deliverable.name}</td>
             <td className="text-center py-2 border">{deliverable.actualName}</td>
