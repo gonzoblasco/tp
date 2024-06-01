@@ -1,18 +1,9 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { fetchDeliverableById, updateDeliverable } from '../api';
-
-interface Deliverable {
-  id: string;
-  name: string;
-  actualName: string;
-  clientName: string;
-  clientNumber: string;
-  statusId: string;
-  endDate: string;
-}
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { getDeliverableById, updateDeliverableById } from '../slices/deliverablesSlice';
+import { Deliverable } from '../types';
 
 /**
  * Formats a date string into YYYY-MM-DD format.
@@ -35,21 +26,16 @@ const DeliverableDetail: React.FC = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<Deliverable>();
-  const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const deliverable = useAppSelector(state => state.deliverables.deliverable);
+  const loading = useAppSelector(state => state.deliverables.loading);
+  const error = useAppSelector(state => state.deliverables.error);
 
-  const { data: deliverable, error, isLoading } = useQuery<Deliverable>(
-    ['deliverable', id],
-    () => fetchDeliverableById(id!)
-  );
-
-  const mutation = useMutation(
-    (data: Deliverable) => updateDeliverable(id!, data), {
-      onSuccess: () => {
-        queryClient.invalidateQueries('deliverables');
-        navigate('/');
-      },
+  useEffect(() => {
+    if (id) {
+      dispatch(getDeliverableById(id));
     }
-  );
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (deliverable) {
@@ -63,21 +49,23 @@ const DeliverableDetail: React.FC = (): JSX.Element => {
   }, [deliverable, setValue]);
 
   const onSubmit = async (data: Deliverable) => {
-    await mutation.mutateAsync(data);
+    if (id) {
+      await dispatch(updateDeliverableById({ id, data }));
+      navigate('/');
+    }
   };
 
-  if (isLoading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
   if (error) {
-    return <div>{error instanceof Error ? error.message : 'An error occurred'}</div>;
+    return <div>{error}</div>;
   }
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Deliverable Detail</h2>
-      {mutation.isError && <div className="text-red-600">{mutation.error instanceof Error ? mutation.error.message : 'An error occurred'}</div>}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Name</label>
