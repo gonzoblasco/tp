@@ -1,3 +1,5 @@
+// noinspection ExceptionCaughtLocallyJS
+
 import {Deliverable} from './types';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

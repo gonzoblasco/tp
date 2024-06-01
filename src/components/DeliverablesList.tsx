@@ -1,25 +1,24 @@
 // DeliverablesList.tsx
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchDeliverables } from '../api';
 import { setDeliverables } from '../slices/deliverablesSlice';
-import { RootState } from '../store';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { Link } from 'react-router-dom';
 
 const DeliverablesList: React.FC = () => {
-  const dispatch = useDispatch();
-  const deliverables = useSelector((state: RootState) => state.deliverables.deliverables);
-  const { data, error, isLoading } = useQuery('deliverables', fetchDeliverables);
+  const dispatch = useAppDispatch();
+  const { data: deliverables, error, isLoading } = useQuery('deliverables', fetchDeliverables);
+  const deliverablesList = useAppSelector((state) => state.deliverables.deliverables);
 
   useEffect(() => {
-    if (data) {
-      dispatch(setDeliverables(data));
+    if (deliverables) {
+      dispatch(setDeliverables(deliverables));
     }
-  }, [data, dispatch]);
+  }, [deliverables, dispatch]);
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {(error as Error).message ?? 'Unknown error'}</p>;
+  if (error) return <p>Error: {(error as Error).message}</p>;
 
   return (
     <div className="container mx-auto p-4">
@@ -37,7 +36,7 @@ const DeliverablesList: React.FC = () => {
         </tr>
         </thead>
         <tbody>
-        {deliverables && deliverables.map((deliverable) => (
+        {deliverablesList.map((deliverable) => (
           <tr key={deliverable.id}>
             <td className="border px-4 py-2">{deliverable.name}</td>
             <td className="border px-4 py-2">{deliverable.actualName}</td>

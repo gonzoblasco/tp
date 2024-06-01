@@ -1,13 +1,13 @@
 // deliverablesSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchDeliverables, fetchDeliverableById, updateDeliverable } from '../api';
-import { Deliverable } from '../types';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {fetchDeliverableById, fetchDeliverables, updateDeliverable} from '../api';
+import {Deliverable} from '../types';
 
 interface DeliverablesState {
   deliverables: Deliverable[];
   deliverable: Deliverable | null;
   loading: boolean;
-  error: string | null | undefined;  // Permitir que el error sea string, null o undefined
+  error: string | null | undefined;
 }
 
 const initialState: DeliverablesState = {
@@ -18,21 +18,18 @@ const initialState: DeliverablesState = {
 };
 
 export const getDeliverables = createAsyncThunk('deliverables/getDeliverables', async () => {
-  const response = await fetchDeliverables();
-  return response;
+  return await fetchDeliverables();
 });
 
 export const getDeliverableById = createAsyncThunk('deliverables/getDeliverableById', async (id: string) => {
-  const response = await fetchDeliverableById(id);
-  return response;
+  return await fetchDeliverableById(id);
 });
 
 export const updateDeliverableById = createAsyncThunk('deliverables/updateDeliverableById', async ({ id, data }: {
   id: string,
   data: Deliverable
 }) => {
-  const response = await updateDeliverable(id, data);
-  return response;
+  return await updateDeliverable(id, data);
 });
 
 const deliverablesSlice = createSlice({
@@ -48,9 +45,9 @@ const deliverablesSlice = createSlice({
       .addCase(getDeliverables.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getDeliverables.fulfilled, (state, action: PayloadAction<Deliverable[]>) => {
+      .addCase(getDeliverables.fulfilled, (state, action: PayloadAction<Deliverable[] | undefined>) => {
         state.loading = false;
-        state.deliverables = action.payload;
+        state.deliverables = action.payload ?? [];
       })
       .addCase(getDeliverables.rejected, (state, action) => {
         state.loading = false;
@@ -61,7 +58,7 @@ const deliverablesSlice = createSlice({
       })
       .addCase(getDeliverableById.fulfilled, (state, action: PayloadAction<Deliverable | undefined>) => {
         state.loading = false;
-        state.deliverable = action.payload ?? null;  // Manejar el caso de undefined
+        state.deliverable = action.payload ?? null;
       })
       .addCase(getDeliverableById.rejected, (state, action) => {
         state.loading = false;
@@ -73,7 +70,9 @@ const deliverablesSlice = createSlice({
       .addCase(updateDeliverableById.fulfilled, (state, action: PayloadAction<Deliverable | undefined>) => {
         state.loading = false;
         if (action.payload) {
-          const index = state.deliverables.findIndex(deliverable => deliverable.id === action.payload?.id);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          const index = state.deliverables.findIndex(deliverable => deliverable.id === action.payload.id);
           if (index !== -1) {
             state.deliverables[index] = action.payload;
           }
