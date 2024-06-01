@@ -31,12 +31,18 @@ const DeliverableDetail: React.FC = (): JSX.Element => {
   const loading = useAppSelector(state => state.deliverables.loading);
   const error = useAppSelector(state => state.deliverables.error);
 
+  /**
+   * Fetches the deliverable details when the component is mounted.
+   */
   useEffect(() => {
     if (id) {
       dispatch(getDeliverableById(id));
     }
   }, [dispatch, id]);
 
+  /**
+   * Sets form values when deliverable data is loaded.
+   */
   useEffect(() => {
     if (deliverable) {
       setValue('name', deliverable.name);
@@ -48,6 +54,10 @@ const DeliverableDetail: React.FC = (): JSX.Element => {
     }
   }, [deliverable, setValue]);
 
+  /**
+   * Handles form submission to update the deliverable.
+   * @param {Deliverable} data - The deliverable data to update.
+   */
   const onSubmit = async (data: Deliverable) => {
     if (id) {
       await dispatch(updateDeliverableById({ id, data }));
