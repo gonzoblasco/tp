@@ -31,18 +31,12 @@ const DeliverableDetail: React.FC = (): JSX.Element => {
   const loading = useAppSelector(state => state.deliverables.loading);
   const error = useAppSelector(state => state.deliverables.error);
 
-  /**
-   * Fetches the deliverable details when the component is mounted.
-   */
   useEffect(() => {
     if (id) {
       dispatch(getDeliverableById(id));
     }
   }, [dispatch, id]);
 
-  /**
-   * Sets form values when deliverable data is loaded.
-   */
   useEffect(() => {
     if (deliverable) {
       setValue('name', deliverable.name);
@@ -54,13 +48,9 @@ const DeliverableDetail: React.FC = (): JSX.Element => {
     }
   }, [deliverable, setValue]);
 
-  /**
-   * Handles form submission to update the deliverable.
-   * @param {Deliverable} data - The deliverable data to update.
-   */
-  const onSubmit = async (data: Deliverable) => {
-    if (id) {
-      await dispatch(updateDeliverableById({ id, data }));
+  const onSubmit = (data: Deliverable) => {
+    if (deliverable) {
+      dispatch(updateDeliverableById({ id: deliverable.id, data }));
       navigate('/');
     }
   };
@@ -73,10 +63,14 @@ const DeliverableDetail: React.FC = (): JSX.Element => {
     return <div>{error}</div>;
   }
 
+  if (!deliverable) {
+    return <div>Deliverable not found</div>;
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Deliverable Detail</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label className="block text-sm font-medium">Name</label>
           <input

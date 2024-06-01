@@ -1,26 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { getDeliverables } from '../slices/deliverablesSlice';
-import { Deliverable } from '../types';
+import { useDeliverables } from '../hooks/useDeliverables';
 
-/**
- * Component for displaying a list of deliverables.
- * Fetches deliverables from the server and displays them in a table.
- * @returns {JSX.Element} The DeliverablesList component.
- */
 const DeliverablesList: React.FC = (): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const deliverables = useAppSelector(state => state.deliverables.deliverables);
-  const loading = useAppSelector(state => state.deliverables.loading);
-  const error = useAppSelector(state => state.deliverables.error);
-
-  /**
-   * Fetches deliverables when the component is mounted.
-   */
-  useEffect(() => {
-    dispatch(getDeliverables());
-  }, [dispatch]);
+  const { deliverables, loading, error } = useDeliverables();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -46,7 +29,7 @@ const DeliverablesList: React.FC = (): JSX.Element => {
         </tr>
         </thead>
         <tbody>
-        {deliverables.map((deliverable: Deliverable) => (
+        {deliverables.map((deliverable) => (
           <tr key={deliverable.id}>
             <td className="border px-4 py-2">{deliverable.name}</td>
             <td className="border px-4 py-2">{deliverable.actualName}</td>
