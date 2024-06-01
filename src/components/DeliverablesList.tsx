@@ -1,14 +1,25 @@
 // DeliverablesList.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchDeliverables } from '../api';
+import { setDeliverables } from '../slices/deliverablesSlice';
+import { RootState } from '../store';
 import { Link } from 'react-router-dom';
 
 const DeliverablesList: React.FC = () => {
-  const { data: deliverables, error, isLoading } = useQuery('deliverables', fetchDeliverables);
+  const dispatch = useDispatch();
+  const deliverables = useSelector((state: RootState) => state.deliverables.deliverables);
+  const { data, error, isLoading } = useQuery('deliverables', fetchDeliverables);
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setDeliverables(data));
+    }
+  }, [data, dispatch]);
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {(error as Error).message}</p>;
+  if (error) return <p>Error: {(error as Error).message ?? 'Unknown error'}</p>;
 
   return (
     <div className="container mx-auto p-4">

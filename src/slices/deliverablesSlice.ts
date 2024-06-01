@@ -1,21 +1,13 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {fetchDeliverables, fetchDeliverableById, updateDeliverable} from '../api';
-
-interface Deliverable {
-  id: string;
-  name: string;
-  actualName: string;
-  clientName: string;
-  clientNumber: string;
-  statusId: string;
-  endDate: string;
-}
+// deliverablesSlice.ts
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { fetchDeliverables, fetchDeliverableById, updateDeliverable } from '../api';
+import { Deliverable } from '../types';
 
 interface DeliverablesState {
   deliverables: Deliverable[];
   deliverable: Deliverable | null;
   loading: boolean;
-  error: string | null;
+  error: string | null | undefined;  // Permitir que el error sea string, null o undefined
 }
 
 const initialState: DeliverablesState = {
@@ -35,7 +27,7 @@ export const getDeliverableById = createAsyncThunk('deliverables/getDeliverableB
   return response;
 });
 
-export const updateDeliverableById = createAsyncThunk('deliverables/updateDeliverableById', async ({id, data}: {
+export const updateDeliverableById = createAsyncThunk('deliverables/updateDeliverableById', async ({ id, data }: {
   id: string,
   data: Deliverable
 }) => {
@@ -46,47 +38,53 @@ export const updateDeliverableById = createAsyncThunk('deliverables/updateDelive
 const deliverablesSlice = createSlice({
   name: 'deliverables',
   initialState,
-  reducers: {},
+  reducers: {
+    setDeliverables(state, action: PayloadAction<Deliverable[]>) {
+      state.deliverables = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getDeliverables.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getDeliverables.fulfilled, (state, action) => {
+      .addCase(getDeliverables.fulfilled, (state, action: PayloadAction<Deliverable[]>) => {
         state.loading = false;
         state.deliverables = action.payload;
       })
       .addCase(getDeliverables.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch deliverables';
+        state.error = action.error.message;
       })
       .addCase(getDeliverableById.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getDeliverableById.fulfilled, (state, action) => {
+      .addCase(getDeliverableById.fulfilled, (state, action: PayloadAction<Deliverable | undefined>) => {
         state.loading = false;
-        state.deliverable = action.payload;
+        state.deliverable = action.payload ?? null;  // Manejar el caso de undefined
       })
       .addCase(getDeliverableById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch deliverable';
+        state.error = action.error.message;
       })
       .addCase(updateDeliverableById.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateDeliverableById.fulfilled, (state, action) => {
+      .addCase(updateDeliverableById.fulfilled, (state, action: PayloadAction<Deliverable | undefined>) => {
         state.loading = false;
-        const updatedDeliverable = action.payload;
-        state.deliverables = state.deliverables.map(deliverable =>
-          deliverable.id === updatedDeliverable.id ? updatedDeliverable : deliverable
-        );
-        state.deliverable = updatedDeliverable;
+        if (action.payload) {
+          const index = state.deliverables.findIndex(deliverable => deliverable.id === action.payload?.id);
+          if (index !== -1) {
+            state.deliverables[index] = action.payload;
+          }
+        }
       })
       .addCase(updateDeliverableById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to update deliverable';
+        state.error = action.error.message;
       });
   },
 });
 
+export const { setDeliverables } = deliverablesSlice.actions;
 export default deliverablesSlice.reducer;
