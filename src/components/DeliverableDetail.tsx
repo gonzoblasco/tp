@@ -1,133 +1,176 @@
-import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { getDeliverableById, updateDeliverableById } from '../slices/deliverablesSlice';
+// DeliverableDetail.tsx
+import React, { useState } from 'react';
+import { useQuery, useMutation } from 'react-query';
+import { useParams } from 'react-router-dom';
+import { fetchDeliverableById, updateDeliverable } from '../api';
 import { Deliverable } from '../types';
 
-/**
- * Formats a date string into YYYY-MM-DD format.
- * @param {string} date - The date string to format.
- * @returns {string} The formatted date string.
- */
-const formatDate = (date: string): string => {
-  const d = new Date(date);
-  const month = `0${d.getMonth() + 1}`.slice(-2);
-  const day = `0${d.getDate()}`.slice(-2);
-  const year = d.getFullYear();
-  return `${year}-${month}-${day}`;
-};
-
-/**
- * Component for displaying and editing a deliverable's details.
- * @returns {JSX.Element} The DeliverableDetail component.
- */
-const DeliverableDetail: React.FC = (): JSX.Element => {
+const DeliverableDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<Deliverable>();
-  const dispatch = useAppDispatch();
-  const deliverable = useAppSelector(state => state.deliverables.deliverable);
-  const loading = useAppSelector(state => state.deliverables.loading);
-  const error = useAppSelector(state => state.deliverables.error);
 
-  useEffect(() => {
+  const { data: deliverable, error, isLoading } = useQuery(['deliverable', id], () => {
     if (id) {
-      dispatch(getDeliverableById(id));
+      return fetchDeliverableById(id);
     }
-  }, [dispatch, id]);
+    return Promise.reject(new Error('ID is undefined'));
+  });
 
-  useEffect(() => {
+  const mutation = useMutation((updatedDeliverable: Deliverable) => {
+    return updateDeliverable(updatedDeliverable.id, updatedDeliverable);
+  });
+
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState<Deliverable>({
+    id: '',
+    name: '',
+    actualName: '',
+    clientName: '',
+    clientNumber: '',
+    statusId: '',
+    endDate: '',
+  });
+
+  React.useEffect(() => {
     if (deliverable) {
-      setValue('name', deliverable.name);
-      setValue('actualName', deliverable.actualName);
-      setValue('clientName', deliverable.clientName);
-      setValue('clientNumber', deliverable.clientNumber);
-      setValue('statusId', deliverable.statusId);
-      setValue('endDate', formatDate(deliverable.endDate));
+      setFormData(deliverable);
     }
-  }, [deliverable, setValue]);
+  }, [deliverable]);
 
-  const onSubmit = (data: Deliverable) => {
-    if (deliverable) {
-      dispatch(updateDeliverableById({ id: deliverable.id, data }));
-      navigate('/');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSave = () => {
+    if (id) {
+      mutation.mutate(formData);
+      setEditMode(false);
+    } else {
+      console.error('ID is undefined');
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {(error as Error).message ?? 'Unknown error'}</p>;
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  if (!deliverable) {
-    return <div>Deliverable not found</div>;
-  }
+  if (!deliverable) return <p>No deliverable found</p>;
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Deliverable Detail</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            {...register('name', { required: true })}
-          />
-          {errors.name && <span className="text-red-600">This field is required</span>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Actual Name</label>
-          <input
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            {...register('actualName', { required: true })}
-          />
-          {errors.actualName && <span className="text-red-600">This field is required</span>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Client Name</label>
-          <input
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            {...register('clientName', { required: true })}
-          />
-          {errors.clientName && <span className="text-red-600">This field is required</span>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Client Number</label>
-          <input
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            {...register('clientNumber', { required: true })}
-          />
-          {errors.clientNumber && <span className="text-red-600">This field is required</span>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Status ID</label>
-          <input
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            {...register('statusId', { required: true })}
-          />
-          {errors.statusId && <span className="text-red-600">This field is required</span>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">End Date</label>
-          <input
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            type="date"
-            {...register('endDate', { required: true })}
-          />
-          {errors.endDate && <span className="text-red-600">This field is required</span>}
-        </div>
-
-        <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-md">Save</button>
-      </form>
+      <h2 className="text-2xl font-bold mb-4">Deliverable Details</h2>
+      <div className="mb-4">
+        <button onClick={() => setEditMode(!editMode)} className="bg-blue-500 text-white px-4 py-2 rounded">
+          {editMode ? 'Cancel' : 'Edit'}
+        </button>
+        {editMode && (
+          <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded ml-2">
+            Save
+          </button>
+        )}
+      </div>
+      <table className="min-w-full bg-white">
+        <tbody>
+        <tr>
+          <td className="border px-4 py-2 font-bold">Name</td>
+          <td className="border px-4 py-2">
+            {editMode ? (
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="border px-2 py-1 w-full"
+              />
+            ) : (
+              deliverable.name
+            )}
+          </td>
+        </tr>
+        <tr>
+          <td className="border px-4 py-2 font-bold">Actual Name</td>
+          <td className="border px-4 py-2">
+            {editMode ? (
+              <input
+                type="text"
+                name="actualName"
+                value={formData.actualName}
+                onChange={handleChange}
+                className="border px-2 py-1 w-full"
+              />
+            ) : (
+              deliverable.actualName
+            )}
+          </td>
+        </tr>
+        <tr>
+          <td className="border px-4 py-2 font-bold">Client Name</td>
+          <td className="border px-4 py-2">
+            {editMode ? (
+              <input
+                type="text"
+                name="clientName"
+                value={formData.clientName}
+                onChange={handleChange}
+                className="border px-2 py-1 w-full"
+              />
+            ) : (
+              deliverable.clientName
+            )}
+          </td>
+        </tr>
+        <tr>
+          <td className="border px-4 py-2 font-bold">Client Number</td>
+          <td className="border px-4 py-2">
+            {editMode ? (
+              <input
+                type="text"
+                name="clientNumber"
+                value={formData.clientNumber}
+                onChange={handleChange}
+                className="border px-2 py-1 w-full"
+              />
+            ) : (
+              deliverable.clientNumber
+            )}
+          </td>
+        </tr>
+        <tr>
+          <td className="border px-4 py-2 font-bold">Status ID</td>
+          <td className="border px-4 py-2">
+            {editMode ? (
+              <input
+                type="text"
+                name="statusId"
+                value={formData.statusId}
+                onChange={handleChange}
+                className="border px-2 py-1 w-full"
+              />
+            ) : (
+              deliverable.statusId
+            )}
+          </td>
+        </tr>
+        <tr>
+          <td className="border px-4 py-2 font-bold">End Date</td>
+          <td className="border px-4 py-2">
+            {editMode ? (
+              <input
+                type="date"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                className="border px-2 py-1 w-full"
+              />
+            ) : (
+              deliverable.endDate
+            )}
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   );
 };

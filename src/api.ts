@@ -73,7 +73,7 @@ export const fetchDeliverableById = async (id: string): Promise<Deliverable | un
 export const updateDeliverable = async (id: string, data: Deliverable): Promise<Deliverable> => {
   try {
     const response = await fetch(`https://marketplace.d1.ey.com/api/use/deliverables/v1/deliverables/${id}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
