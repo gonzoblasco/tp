@@ -1,17 +1,14 @@
+// DeliverablesList.tsx
 import React from 'react';
+import { useQuery } from 'react-query';
+import { fetchDeliverables } from '../api';
 import { Link } from 'react-router-dom';
-import { useDeliverables } from '../hooks/useDeliverables';
 
-const DeliverablesList: React.FC = (): JSX.Element => {
-  const { deliverables, loading, error } = useDeliverables();
+const DeliverablesList: React.FC = () => {
+  const { data: deliverables, error, isLoading } = useQuery('deliverables', fetchDeliverables);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {(error as Error).message}</p>;
 
   return (
     <div className="container mx-auto p-4">
@@ -29,7 +26,7 @@ const DeliverablesList: React.FC = (): JSX.Element => {
         </tr>
         </thead>
         <tbody>
-        {deliverables.map((deliverable) => (
+        {deliverables && deliverables.map((deliverable) => (
           <tr key={deliverable.id}>
             <td className="border px-4 py-2">{deliverable.name}</td>
             <td className="border px-4 py-2">{deliverable.actualName}</td>

@@ -1,15 +1,18 @@
+// main.tsx
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
+import { QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
 import store from './store';
-import './index.css';
+import queryClient from './queryClient';
+import App from './App';
+import './index.css'; // Asegúrate de importar Tailwind CSS aquí
 
-const queryClient = new QueryClient();
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement!);
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+root.render(
   <React.StrictMode>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
