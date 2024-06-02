@@ -5,10 +5,17 @@ import DeliverableView from './DeliverableView';
 import DeliverableEdit from './DeliverableEdit';
 import { DeliverableFormData } from '../types';
 
+/**
+ * Component to display the details of a deliverable.
+ */
 const DeliverableDetail: React.FC = () => {
   const { deliverable, error, isLoading, mutation } = useDeliverable();
   const [editMode, setEditMode] = useState(false);
 
+  /**
+   * Handles the save action when the form is submitted.
+   * @param data - The data from the form.
+   */
   const handleSave = (data: DeliverableFormData) => {
     mutation.mutate(data, {
       onSuccess: () => {
