@@ -13,6 +13,8 @@ import {
   Paper,
   Button,
   Typography,
+  CircularProgress,
+  Grid,
 } from '@mui/material';
 
 const DeliverablesList: React.FC = () => {
@@ -22,12 +24,12 @@ const DeliverablesList: React.FC = () => {
   useEffect(() => {
     if (deliverables) {
       deliverables.forEach((deliverable: Deliverable) => {
-        queryClient.prefetchQuery(['deliverable', deliverable.id], () => deliverable);
+        queryClient.setQueryData(['deliverable', deliverable.id], deliverable);
       });
     }
   }, [deliverables, queryClient]);
 
-  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isLoading) return <Grid container justifyContent="center"><CircularProgress /></Grid>;
   if (error) return <Typography>Error: {(error as Error).message}</Typography>;
 
   return (
