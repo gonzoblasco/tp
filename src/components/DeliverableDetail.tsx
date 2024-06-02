@@ -6,7 +6,7 @@ import { Deliverable, DeliverableFormData } from '../types';
 import useDeliverables from '../hooks/useDeliverables';
 import DeliverableView from './DeliverableView';
 import DeliverableEdit from './DeliverableEdit';
-import { Container, Typography, Button } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 
 const DeliverableDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
