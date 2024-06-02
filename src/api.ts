@@ -1,11 +1,6 @@
 import { Deliverable } from './types';
 import { env } from './env';
 
-/**
- * Fetches the list of deliverables from the server.
- * If the fetch fails, it falls back to mock data.
- * @returns {Promise<Deliverable[]>} The list of deliverables.
- */
 export const fetchDeliverables = async (): Promise<Deliverable[]> => {
   try {
     const response = await fetch('https://marketplace.d1.ey.com/api/use/deliverables/v1/deliverables', {
@@ -26,17 +21,12 @@ export const fetchDeliverables = async (): Promise<Deliverable[]> => {
 
     // Fetch mock data
     const mockResponse = await fetch('/mockData.json');
-    return await mockResponse.json();
+    const mockData = await mockResponse.json();
+    return mockData.data; // Asume que la respuesta mock tiene una propiedad `data` que contiene los deliverables
   }
 };
 
-/**
- * Fetches a deliverable by its ID from the server.
- * If the fetch fails, it falls back to mock data.
- * @param {string} id - The ID of the deliverable.
- * @returns {Promise<Deliverable | undefined>} The deliverable, or undefined if not found.
- */
-export const fetchDeliverableById = async (id: string): Promise<Deliverable | undefined> => {
+export const fetchDeliverableById = async (id: string): Promise<Deliverable> => {
   try {
     const response = await fetch(`https://marketplace.d1.ey.com/api/use/deliverables/v1/deliverables/${id}`, {
       headers: {
@@ -46,18 +36,29 @@ export const fetchDeliverableById = async (id: string): Promise<Deliverable | un
     });
 
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error('Failed to fetch deliverable');
     }
 
     const data = await response.json();
-    return data.data; // Asume que la respuesta tiene una propiedad `data` que contiene el deliverable
+
+    if (!data.data) {
+      throw new Error('Deliverable not found');
+    }
+
+    return data.data as Deliverable;
   } catch (error) {
     console.error('Fetch failed, using mock data:', error);
 
     // Fetch mock data
     const mockResponse = await fetch('/mockData.json');
-    const mockData: Deliverable[] = await mockResponse.json();
-    return mockData.find((deliverable) => deliverable.id === id);
+    const mockData = await mockResponse.json();
+    const deliverable = mockData.data.find((deliverable: Deliverable) => deliverable.id === id);
+
+    if (!deliverable) {
+      throw new Error('Deliverable not found in mock data');
+    }
+
+    return deliverable;
   }
 };
 
@@ -65,7 +66,7 @@ export const fetchDeliverableById = async (id: string): Promise<Deliverable | un
  * Updates a deliverable by its ID on the server.
  * @param {string} id - The ID of the deliverable.
  * @param {Deliverable} data - The deliverable data to update.
- * @returns {Promise} The updated deliverable.
+ * @returns {Promise<Deliverable>} The updated deliverable.
  */
 export const updateDeliverable = async (id: string, data: Deliverable): Promise<Deliverable> => {
   try {

@@ -1,20 +1,22 @@
-[
-  {
-    "id": "1",
-    "name": "Deliverable 1",
-    "actualName": "Actual Deliverable 1",
-    "clientName": "Client 1",
-    "clientNumber": "123456",
-    "statusId": "Draft",
-    "endDate": "2024-12-31"
-  },
-  {
-    "id": "2",
-    "name": "Deliverable 2",
-    "actualName": "Actual Deliverable 2",
-    "clientName": "Client 2",
-    "clientNumber": "654321",
-    "statusId": "Pending",
-    "endDate": "2024-11-30"
-  }
-]
+{
+  "data": [
+    {
+      "id": "1",
+      "name": "Deliverable 1",
+      "actualName": "Actual Deliverable 1",
+      "clientName": "Client 1",
+      "clientNumber": "123456",
+      "statusId": "1",
+      "endDate": "2023-06-01"
+    },
+    {
+      "id": "2",
+      "name": "Deliverable 2",
+      "actualName": "Actual Deliverable 2",
+      "clientName": "Client 2",
+      "clientNumber": "789012",
+      "statusId": "2",
+      "endDate": "2023-07-01"
+    }
+  ]
+}

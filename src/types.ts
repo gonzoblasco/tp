@@ -8,4 +8,11 @@ export interface Deliverable {
   endDate: string;
 }
 
-export type DeliverableFormData = Omit<Deliverable, 'id'>;
+export interface DeliverableFormData {
+  name: string;
+  actualName: string;
+  clientName: string;
+  clientNumber: string;
+  statusId: string;
+  endDate: string;
+}

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
-import useDeliverables from '../hooks/useDeliverables';
+import { fetchDeliverables } from '../api';
 import { Deliverable } from '../types';
 import {
   Table,
@@ -18,19 +18,11 @@ import {
 } from '@mui/material';
 
 const DeliverablesList: React.FC = () => {
-  const queryClient = useQueryClient();
-  const { data: deliverables, error, isLoading } = useDeliverables();
-
-  useEffect(() => {
-    if (deliverables) {
-      deliverables.forEach((deliverable: Deliverable) => {
-        queryClient.setQueryData(['deliverable', deliverable.id], deliverable);
-      });
-    }
-  }, [deliverables, queryClient]);
+  const { data: deliverables, error, isLoading } = useQuery<Deliverable[], Error>('deliverables', fetchDeliverables);
 
   if (isLoading) return <Grid container justifyContent="center"><CircularProgress /></Grid>;
-  if (error) return <Typography>Error: {(error as Error).message}</Typography>;
+  if (error) return <Typography>Error: {error.message}</Typography>;
+  if (!deliverables || deliverables.length === 0) return <Typography>No deliverables found</Typography>;
 
   return (
     <TableContainer component={Paper} className="container mx-auto p-4">
@@ -50,7 +42,7 @@ const DeliverablesList: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {deliverables?.map((deliverable) => (
+          {deliverables.map((deliverable) => (
             <TableRow key={deliverable.id}>
               <TableCell>{deliverable.name}</TableCell>
               <TableCell>{deliverable.actualName}</TableCell>

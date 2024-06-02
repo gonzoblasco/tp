@@ -1,42 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useMutation } from 'react-query';
-import { updateDeliverable } from '../api';
-import { Deliverable, DeliverableFormData } from '../types';
-import useDeliverables from '../hooks/useDeliverables';
+import React, { useState } from 'react';
+import { Container, Typography, CircularProgress, Grid } from '@mui/material';
+import { useDeliverable } from '../hooks/useDeliverable';
 import DeliverableView from './DeliverableView';
 import DeliverableEdit from './DeliverableEdit';
-import { Container, Typography } from '@mui/material';
+import { DeliverableFormData } from '../types';
 
 const DeliverableDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const { data: deliverables, error, isLoading } = useDeliverables();
-  const [deliverable, setDeliverable] = useState<Deliverable | null>(null);
-
-  const mutation = useMutation((updatedDeliverable: Deliverable) => {
-    return updateDeliverable(updatedDeliverable.id, updatedDeliverable);
-  });
-
+  const { deliverable, error, isLoading, mutation } = useDeliverable();
   const [editMode, setEditMode] = useState(false);
 
-  useEffect(() => {
-    if (deliverables && id) {
-      const foundDeliverable = deliverables.find((d) => d.id === id);
-      setDeliverable(foundDeliverable || null);
-    }
-  }, [deliverables, id]);
-
   const handleSave = (data: DeliverableFormData) => {
-    if (id) {
-      mutation.mutate({ ...data, id });
-      setEditMode(false);
-    } else {
-      console.error('ID is undefined');
-    }
+    mutation.mutate(data, {
+      onSuccess: () => {
+        setEditMode(false);
+      },
+    });
   };
 
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (error) return <Typography>Error: {(error as Error).message}</Typography>;
+  if (isLoading) return <Grid container justifyContent="center"><CircularProgress /></Grid>;
+  if (error) return <Typography>Error: {error.message}</Typography>;
   if (!deliverable) return <Typography>No deliverable found</Typography>;
 
   return (
