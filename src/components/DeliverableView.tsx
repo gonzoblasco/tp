@@ -1,6 +1,6 @@
-// DeliverableView.tsx
 import React from 'react';
 import { Deliverable } from '../types';
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Button } from '@mui/material';
 
 interface DeliverableViewProps {
   deliverable: Deliverable;
@@ -9,37 +9,39 @@ interface DeliverableViewProps {
 
 const DeliverableView: React.FC<DeliverableViewProps> = ({ deliverable, onEdit }) => (
   <div>
-    <div className="mb-4">
-      <button onClick={onEdit} className="bg-blue-500 text-white px-4 py-2 rounded">Edit</button>
-    </div>
-    <table className="min-w-full bg-white">
-      <tbody>
-      <tr>
-        <td className="border px-4 py-2 font-bold">Name</td>
-        <td className="border px-4 py-2">{deliverable.name}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2 font-bold">Actual Name</td>
-        <td className="border px-4 py-2">{deliverable.actualName}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2 font-bold">Client Name</td>
-        <td className="border px-4 py-2">{deliverable.clientName}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2 font-bold">Client Number</td>
-        <td className="border px-4 py-2">{deliverable.clientNumber}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2 font-bold">Status ID</td>
-        <td className="border px-4 py-2">{deliverable.statusId}</td>
-      </tr>
-      <tr>
-        <td className="border px-4 py-2 font-bold">End Date</td>
-        <td className="border px-4 py-2">{deliverable.endDate}</td>
-      </tr>
-      </tbody>
-    </table>
+    <Button variant="contained" color="primary" onClick={onEdit} style={{ marginBottom: '16px' }}>
+      Edit
+    </Button>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>{deliverable.name}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Actual Name</TableCell>
+            <TableCell>{deliverable.actualName}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Client Name</TableCell>
+            <TableCell>{deliverable.clientName}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Client Number</TableCell>
+            <TableCell>{deliverable.clientNumber}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Status ID</TableCell>
+            <TableCell>{deliverable.statusId}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>End Date</TableCell>
+            <TableCell>{deliverable.endDate}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
   </div>
 );
 

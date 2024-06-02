@@ -6,6 +6,7 @@ import { Deliverable, DeliverableFormData } from '../types';
 import useDeliverables from '../hooks/useDeliverables';
 import DeliverableView from './DeliverableView';
 import DeliverableEdit from './DeliverableEdit';
+import { Container, Typography, Button } from '@mui/material';
 
 const DeliverableDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,32 +27,29 @@ const DeliverableDetail: React.FC = () => {
   }, [deliverables, id]);
 
   const handleSave = (data: DeliverableFormData) => {
-    if (id && deliverable) {
-      const updatedDeliverable: Deliverable = { ...deliverable, ...data };
-      mutation.mutate(updatedDeliverable);
+    if (id) {
+      mutation.mutate({ ...data, id });
       setEditMode(false);
     } else {
       console.error('ID is undefined');
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {(error as Error).message ?? 'Unknown error'}</p>;
-  if (!deliverable) return <p>No deliverable found</p>;
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (error) return <Typography>Error: {(error as Error).message}</Typography>;
+  if (!deliverable) return <Typography>No deliverable found</Typography>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Deliverable Details</h2>
+    <Container>
+      <Typography variant="h4" component="h2" gutterBottom>
+        Deliverable Details
+      </Typography>
       {editMode ? (
-        <DeliverableEdit
-          formData={deliverable}
-          onSave={handleSave}
-          onCancel={() => setEditMode(false)}
-        />
+        <DeliverableEdit formData={deliverable} onSave={handleSave} onCancel={() => setEditMode(false)} />
       ) : (
         <DeliverableView deliverable={deliverable} onEdit={() => setEditMode(true)} />
       )}
-    </div>
+    </Container>
   );
 };
 

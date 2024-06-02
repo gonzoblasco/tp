@@ -3,6 +3,17 @@ import { useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 import useDeliverables from '../hooks/useDeliverables';
 import { Deliverable } from '../types';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+} from '@mui/material';
 
 const DeliverablesList: React.FC = () => {
   const queryClient = useQueryClient();
@@ -16,43 +27,45 @@ const DeliverablesList: React.FC = () => {
     }
   }, [deliverables, queryClient]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {(error as Error).message}</p>;
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (error) return <Typography>Error: {(error as Error).message}</Typography>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Deliverables</h2>
-      <table className="min-w-full bg-white">
-        <thead>
-        <tr>
-          <th className="py-2">Name</th>
-          <th className="py-2">Actual Name</th>
-          <th className="py-2">Client Name</th>
-          <th className="py-2">Client Number</th>
-          <th className="py-2">Status ID</th>
-          <th className="py-2">End Date</th>
-          <th className="py-2">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {deliverables?.map((deliverable) => (
-          <tr key={deliverable.id}>
-            <td className="border px-4 py-2">{deliverable.name}</td>
-            <td className="border px-4 py-2">{deliverable.actualName}</td>
-            <td className="border px-4 py-2">{deliverable.clientName}</td>
-            <td className="border px-4 py-2">{deliverable.clientNumber}</td>
-            <td className="border px-4 py-2">{deliverable.statusId}</td>
-            <td className="border px-4 py-2">{deliverable.endDate}</td>
-            <td className="border px-4 py-2">
-              <Link to={`/deliverable/${deliverable.id}`} className="text-blue-500 hover:text-blue-700">
-                View
-              </Link>
-            </td>
-          </tr>
-        ))}
-        </tbody>
-      </table>
-    </div>
+    <TableContainer component={Paper} className="container mx-auto p-4">
+      <Typography variant="h4" component="h2" gutterBottom>
+        Deliverables
+      </Typography>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Actual Name</TableCell>
+            <TableCell>Client Name</TableCell>
+            <TableCell>Client Number</TableCell>
+            <TableCell>Status ID</TableCell>
+            <TableCell>End Date</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {deliverables?.map((deliverable) => (
+            <TableRow key={deliverable.id}>
+              <TableCell>{deliverable.name}</TableCell>
+              <TableCell>{deliverable.actualName}</TableCell>
+              <TableCell>{deliverable.clientName}</TableCell>
+              <TableCell>{deliverable.clientNumber}</TableCell>
+              <TableCell>{deliverable.statusId}</TableCell>
+              <TableCell>{deliverable.endDate}</TableCell>
+              <TableCell>
+                <Button variant="contained" color="primary" component={Link} to={`/deliverable/${deliverable.id}`}>
+                  View
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
