@@ -1,4 +1,3 @@
-// types.ts
 export interface Deliverable {
   id: string;
   name: string;
@@ -8,3 +7,5 @@ export interface Deliverable {
   statusId: string;
   endDate: string;
 }
+
+export type DeliverableFormData = Omit<Deliverable, 'id'>;
