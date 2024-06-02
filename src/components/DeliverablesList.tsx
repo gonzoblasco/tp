@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 import useDeliverables from '../hooks/useDeliverables';
-import { setDeliverables } from '../slices/deliverablesSlice';
-import { RootState } from '../store';
+import { Deliverable } from '../types';
 
 const DeliverablesList: React.FC = () => {
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const { data: deliverables, error, isLoading } = useDeliverables();
-  const deliverablesList = useSelector((state: RootState) => state.deliverables.deliverables);
 
   useEffect(() => {
     if (deliverables) {
-      dispatch(setDeliverables(deliverables));
+      deliverables.forEach((deliverable: Deliverable) => {
+        queryClient.prefetchQuery(['deliverable', deliverable.id], () => deliverable);
+      });
     }
-  }, [deliverables, dispatch]);
+  }, [deliverables, queryClient]);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {(error as Error).message}</p>;
@@ -35,7 +35,7 @@ const DeliverablesList: React.FC = () => {
         </tr>
         </thead>
         <tbody>
-        {deliverablesList.map((deliverable) => (
+        {deliverables?.map((deliverable) => (
           <tr key={deliverable.id}>
             <td className="border px-4 py-2">{deliverable.name}</td>
             <td className="border px-4 py-2">{deliverable.actualName}</td>
