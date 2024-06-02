@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, CircularProgress, Grid } from '@mui/material';
+import { Container, Typography, CircularProgress, Grid, Box } from '@mui/material';
 import { useDeliverable } from '../hooks/useDeliverable';
 import DeliverableView from './DeliverableView';
 import DeliverableEdit from './DeliverableEdit';
@@ -17,15 +17,41 @@ const DeliverableDetail: React.FC = () => {
     });
   };
 
-  if (isLoading) return <Grid container justifyContent="center"><CircularProgress /></Grid>;
-  if (error) return <Typography>Error: {error.message}</Typography>;
-  if (!deliverable) return <Typography>No deliverable found</Typography>;
+  if (isLoading) {
+    return (
+      <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+        <CircularProgress />
+      </Grid>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Typography variant="h6" color="error" gutterBottom>
+          Error: {error.message}
+        </Typography>
+      </Container>
+    );
+  }
+
+  if (!deliverable) {
+    return (
+      <Container>
+        <Typography variant="h6" gutterBottom>
+          No deliverable found
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Container>
-      <Typography variant="h4" component="h2" gutterBottom>
-        Deliverable Details
-      </Typography>
+      <Box mt={4} mb={2}>
+        <Typography variant="h4" component="h2" gutterBottom>
+          Deliverable Details
+        </Typography>
+      </Box>
       {editMode ? (
         <DeliverableEdit formData={deliverable} onSave={handleSave} onCancel={() => setEditMode(false)} />
       ) : (

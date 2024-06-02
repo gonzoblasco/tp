@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';  // Eliminamos useEffect ya que no se está utilizando
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { fetchDeliverables } from '../api';
@@ -16,50 +16,84 @@ import {
   CircularProgress,
   Grid,
 } from '@mui/material';
+import { Container, Box } from '@mui/system';
 
 const DeliverablesList: React.FC = () => {
   const { data: deliverables, error, isLoading } = useQuery<Deliverable[], Error>('deliverables', fetchDeliverables);
 
-  if (isLoading) return <Grid container justifyContent="center"><CircularProgress /></Grid>;
-  if (error) return <Typography>Error: {error.message}</Typography>;
-  if (!deliverables || deliverables.length === 0) return <Typography>No deliverables found</Typography>;
+  if (isLoading) {
+    return (
+      <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
+        <CircularProgress />
+      </Grid>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Typography variant="h6" color="error" gutterBottom>
+          Error: {error.message}
+        </Typography>
+      </Container>
+    );
+  }
+
+  if (!deliverables || deliverables.length === 0) {
+    return (
+      <Container>
+        <Typography variant="h6" gutterBottom>
+          No deliverables found
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
-    <TableContainer component={Paper} className="container mx-auto p-4">
-      <Typography variant="h4" component="h2" gutterBottom>
-        Deliverables
-      </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Actual Name</TableCell>
-            <TableCell>Client Name</TableCell>
-            <TableCell>Client Number</TableCell>
-            <TableCell>Status ID</TableCell>
-            <TableCell>End Date</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {deliverables.map((deliverable) => (
-            <TableRow key={deliverable.id}>
-              <TableCell>{deliverable.name}</TableCell>
-              <TableCell>{deliverable.actualName}</TableCell>
-              <TableCell>{deliverable.clientName}</TableCell>
-              <TableCell>{deliverable.clientNumber}</TableCell>
-              <TableCell>{deliverable.statusId}</TableCell>
-              <TableCell>{deliverable.endDate}</TableCell>
-              <TableCell>
-                <Button variant="contained" color="primary" component={Link} to={`/deliverable/${deliverable.id}`}>
-                  View
-                </Button>
-              </TableCell>
+    <Container>
+      <Box mt={4} mb={2}>
+        <Typography variant="h4" component="h2" gutterBottom>
+          Deliverables
+        </Typography>
+      </Box>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Actual Name</TableCell>
+              <TableCell>Client Name</TableCell>
+              <TableCell>Client Number</TableCell>
+              <TableCell>Status ID</TableCell>
+              <TableCell>End Date</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {deliverables.map((deliverable) => (
+              <TableRow key={deliverable.id}>
+                <TableCell>{deliverable.name}</TableCell>
+                <TableCell>{deliverable.actualName}</TableCell>
+                <TableCell>{deliverable.clientName}</TableCell>
+                <TableCell>{deliverable.clientNumber}</TableCell>
+                <TableCell>{deliverable.statusId}</TableCell>
+                <TableCell>{deliverable.endDate}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    component={Link}
+                    to={`/deliverable/${deliverable.id}`}
+                  >
+                    View
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 };
 

@@ -1,48 +1,50 @@
 import React from 'react';
 import { Deliverable } from '../types';
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Button } from '@mui/material';
+import { Button, Grid, Typography, Card, CardContent, CardActions } from '@mui/material';
 
 interface DeliverableViewProps {
   deliverable: Deliverable;
   onEdit: () => void;
 }
 
-const DeliverableView: React.FC<DeliverableViewProps> = ({ deliverable, onEdit }) => (
-  <div>
-    <Button variant="contained" color="primary" onClick={onEdit} style={{ marginBottom: '16px' }}>
-      Edit
-    </Button>
-    <TableContainer component={Paper}>
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>{deliverable.name}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Actual Name</TableCell>
-            <TableCell>{deliverable.actualName}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Client Name</TableCell>
-            <TableCell>{deliverable.clientName}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Client Number</TableCell>
-            <TableCell>{deliverable.clientNumber}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Status ID</TableCell>
-            <TableCell>{deliverable.statusId}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>End Date</TableCell>
-            <TableCell>{deliverable.endDate}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-  </div>
-);
+const DeliverableView: React.FC<DeliverableViewProps> = ({ deliverable, onEdit }) => {
+  return (
+    <Card>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h6">Name</Typography>
+            <Typography>{deliverable.name}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Actual Name</Typography>
+            <Typography>{deliverable.actualName}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Client Name</Typography>
+            <Typography>{deliverable.clientName}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Client Number</Typography>
+            <Typography>{deliverable.clientNumber}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Status ID</Typography>
+            <Typography>{deliverable.statusId}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">End Date</Typography>
+            <Typography>{deliverable.endDate}</Typography>
+          </Grid>
+        </Grid>
+      </CardContent>
+      <CardActions>
+        <Button variant="contained" color="primary" onClick={onEdit}>
+          Edit
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
 
 export default DeliverableView;
