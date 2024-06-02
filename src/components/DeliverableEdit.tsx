@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { DeliverableFormData } from '../types';
 import { deliverableSchema } from '../validationSchema';
-import { Button, TextField, Grid, Box } from '@mui/material';
+import { Button, TextField, Grid, Box, CircularProgress } from '@mui/material';
 
 interface DeliverableEditProps {
   formData: DeliverableFormData;
@@ -122,21 +122,10 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" justifyContent="space-between">
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isSubmitting}
-              aria-busy={isSubmitting}
-            >
-              {isSubmitting ? 'Saving...' : 'Save'}
+            <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+              {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Save'}
             </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={onCancel}
-              disabled={isSubmitting}
-            >
+            <Button variant="contained" color="secondary" onClick={onCancel} disabled={isSubmitting}>
               Cancel
             </Button>
           </Box>
