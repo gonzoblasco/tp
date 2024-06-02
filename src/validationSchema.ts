@@ -6,9 +6,5 @@ export const deliverableSchema = yup.object().shape({
   clientName: yup.string().required('Client Name is required'),
   clientNumber: yup.string().required('Client Number is required'),
   statusId: yup.string().required('Status ID is required'),
-  endDate: yup.string()
-    .required('End Date is required')
-    .test('is-date', 'End Date must be a valid date', (value) => {
-      return !value || !isNaN(Date.parse(value));
-    }),
+  endDate: yup.string().required('End Date is required'), // Cambiado a string
 });

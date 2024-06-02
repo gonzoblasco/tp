@@ -1,9 +1,9 @@
 import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { DeliverableFormData } from '../types';
 import { deliverableSchema } from '../validationSchema';
-import { TextField, Button, Container } from '@mui/material';
+import { Button, TextField, Grid, Box } from '@mui/material';
 
 interface DeliverableEditProps {
   formData: DeliverableFormData;
@@ -12,86 +12,120 @@ interface DeliverableEditProps {
 }
 
 const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onCancel }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm<DeliverableFormData>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<DeliverableFormData>({
     defaultValues: formData,
     resolver: yupResolver(deliverableSchema),
   });
 
-  const onSubmit: SubmitHandler<DeliverableFormData> = (data) => {
-    onSave(data);
-  };
-
   return (
-    <Container>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div style={{ marginBottom: '16px' }}>
-          <TextField
-            label="Name"
-            {...register('name')}
-            error={!!errors.name}
-            helperText={errors.name ? errors.name.message : ''}
-            fullWidth
+    <form onSubmit={handleSubmit(onSave)}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Name"
+                fullWidth
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            )}
           />
-        </div>
-        <div style={{ marginBottom: '16px' }}>
-          <TextField
-            label="Actual Name"
-            {...register('actualName')}
-            error={!!errors.actualName}
-            helperText={errors.actualName ? errors.actualName.message : ''}
-            fullWidth
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="actualName"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Actual Name"
+                fullWidth
+                error={!!errors.actualName}
+                helperText={errors.actualName?.message}
+              />
+            )}
           />
-        </div>
-        <div style={{ marginBottom: '16px' }}>
-          <TextField
-            label="Client Name"
-            {...register('clientName')}
-            error={!!errors.clientName}
-            helperText={errors.clientName ? errors.clientName.message : ''}
-            fullWidth
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="clientName"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Client Name"
+                fullWidth
+                error={!!errors.clientName}
+                helperText={errors.clientName?.message}
+              />
+            )}
           />
-        </div>
-        <div style={{ marginBottom: '16px' }}>
-          <TextField
-            label="Client Number"
-            {...register('clientNumber')}
-            error={!!errors.clientNumber}
-            helperText={errors.clientNumber ? errors.clientNumber.message : ''}
-            fullWidth
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="clientNumber"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Client Number"
+                fullWidth
+                error={!!errors.clientNumber}
+                helperText={errors.clientNumber?.message}
+              />
+            )}
           />
-        </div>
-        <div style={{ marginBottom: '16px' }}>
-          <TextField
-            label="Status ID"
-            {...register('statusId')}
-            error={!!errors.statusId}
-            helperText={errors.statusId ? errors.statusId.message : ''}
-            fullWidth
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="statusId"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Status ID"
+                fullWidth
+                error={!!errors.statusId}
+                helperText={errors.statusId?.message}
+              />
+            )}
           />
-        </div>
-        <div style={{ marginBottom: '16px' }}>
-          <TextField
-            label="End Date"
-            type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            {...register('endDate')}
-            error={!!errors.endDate}
-            helperText={errors.endDate ? errors.endDate.message : ''}
-            fullWidth
+        </Grid>
+        <Grid item xs={12}>
+          <Controller
+            name="endDate"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="End Date"
+                fullWidth
+                error={!!errors.endDate}
+                helperText={errors.endDate?.message}
+              />
+            )}
           />
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button variant="contained" color="primary" type="submit">
-            Save
-          </Button>
-          <Button variant="contained" color="secondary" onClick={onCancel}>
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </Container>
+        </Grid>
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="space-between">
+            <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving...' : 'Save'}
+            </Button>
+            <Button variant="contained" color="secondary" onClick={onCancel} disabled={isSubmitting}>
+              Cancel
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
+    </form>
   );
 };
 

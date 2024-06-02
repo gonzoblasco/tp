@@ -14,5 +14,5 @@ export interface DeliverableFormData {
   clientName: string;
   clientNumber: string;
   statusId: string;
-  endDate: string;
+  endDate: string; // Asegurarse de que sea string
 }
