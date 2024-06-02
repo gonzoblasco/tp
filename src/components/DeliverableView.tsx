@@ -9,11 +9,13 @@ interface DeliverableViewProps {
 
 const DeliverableView: React.FC<DeliverableViewProps> = ({ deliverable, onEdit }) => {
   return (
-    <Card>
+    <Card role="article" aria-labelledby="deliverable-details">
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h6">Name</Typography>
+            <Typography variant="h6" id="deliverable-details">
+              Name
+            </Typography>
             <Typography>{deliverable.name}</Typography>
           </Grid>
           <Grid item xs={12}>
@@ -39,7 +41,7 @@ const DeliverableView: React.FC<DeliverableViewProps> = ({ deliverable, onEdit }
         </Grid>
       </CardContent>
       <CardActions>
-        <Button variant="contained" color="primary" onClick={onEdit}>
+        <Button variant="contained" color="primary" onClick={onEdit} aria-label={`Edit ${deliverable.name}`}>
           Edit
         </Button>
       </CardActions>

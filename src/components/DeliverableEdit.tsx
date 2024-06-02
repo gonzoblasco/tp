@@ -22,7 +22,7 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
   });
 
   return (
-    <form onSubmit={handleSubmit(onSave)}>
+    <form onSubmit={handleSubmit(onSave)} aria-labelledby="edit-deliverable-form">
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Controller
@@ -35,6 +35,7 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
                 fullWidth
                 error={!!errors.name}
                 helperText={errors.name?.message}
+                aria-required="true"
               />
             )}
           />
@@ -50,6 +51,7 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
                 fullWidth
                 error={!!errors.actualName}
                 helperText={errors.actualName?.message}
+                aria-required="true"
               />
             )}
           />
@@ -65,6 +67,7 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
                 fullWidth
                 error={!!errors.clientName}
                 helperText={errors.clientName?.message}
+                aria-required="true"
               />
             )}
           />
@@ -80,6 +83,7 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
                 fullWidth
                 error={!!errors.clientNumber}
                 helperText={errors.clientNumber?.message}
+                aria-required="true"
               />
             )}
           />
@@ -95,6 +99,7 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
                 fullWidth
                 error={!!errors.statusId}
                 helperText={errors.statusId?.message}
+                aria-required="true"
               />
             )}
           />
@@ -110,16 +115,28 @@ const DeliverableEdit: React.FC<DeliverableEditProps> = ({ formData, onSave, onC
                 fullWidth
                 error={!!errors.endDate}
                 helperText={errors.endDate?.message}
+                aria-required="true"
               />
             )}
           />
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" justifyContent="space-between">
-            <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isSubmitting}
+              aria-busy={isSubmitting}
+            >
               {isSubmitting ? 'Saving...' : 'Save'}
             </Button>
-            <Button variant="contained" color="secondary" onClick={onCancel} disabled={isSubmitting}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={onCancel}
+              disabled={isSubmitting}
+            >
               Cancel
             </Button>
           </Box>

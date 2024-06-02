@@ -1,4 +1,4 @@
-import React from 'react';  // Eliminamos useEffect ya que no se está utilizando
+import React from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { fetchDeliverables } from '../api';
@@ -24,7 +24,7 @@ const DeliverablesList: React.FC = () => {
   if (isLoading) {
     return (
       <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
-        <CircularProgress />
+        <CircularProgress role="status" aria-label="Loading" />
       </Grid>
     );
   }
@@ -32,7 +32,7 @@ const DeliverablesList: React.FC = () => {
   if (error) {
     return (
       <Container>
-        <Typography variant="h6" color="error" gutterBottom>
+        <Typography variant="h6" color="error" gutterBottom role="alert">
           Error: {error.message}
         </Typography>
       </Container>
@@ -56,7 +56,7 @@ const DeliverablesList: React.FC = () => {
           Deliverables
         </Typography>
       </Box>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} role="table" aria-label="Deliverables table">
         <Table>
           <TableHead>
             <TableRow>
@@ -84,6 +84,7 @@ const DeliverablesList: React.FC = () => {
                     color="primary"
                     component={Link}
                     to={`/deliverable/${deliverable.id}`}
+                    aria-label={`View details for ${deliverable.name}`}
                   >
                     View
                   </Button>
