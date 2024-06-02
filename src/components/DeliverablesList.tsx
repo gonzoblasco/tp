@@ -1,15 +1,14 @@
-// DeliverablesList.tsx
 import React, { useEffect } from 'react';
-import { useQuery } from 'react-query';
-import { fetchDeliverables } from '../api';
-import { setDeliverables } from '../slices/deliverablesSlice';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import useDeliverables from '../hooks/useDeliverables';
+import { setDeliverables } from '../slices/deliverablesSlice';
+import { RootState } from '../store';
 
 const DeliverablesList: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { data: deliverables, error, isLoading } = useQuery('deliverables', fetchDeliverables);
-  const deliverablesList = useAppSelector((state) => state.deliverables.deliverables);
+  const dispatch = useDispatch();
+  const { data: deliverables, error, isLoading } = useDeliverables();
+  const deliverablesList = useSelector((state: RootState) => state.deliverables.deliverables);
 
   useEffect(() => {
     if (deliverables) {

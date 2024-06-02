@@ -1,10 +1,5 @@
-// noinspection ExceptionCaughtLocallyJS
-
-import {Deliverable} from './types';
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-const token = import.meta.env.VITE_API_TOKEN;
+import { Deliverable } from './types';
+import { env } from './env';
 
 /**
  * Fetches the list of deliverables from the server.
@@ -15,7 +10,7 @@ export const fetchDeliverables = async (): Promise<Deliverable[]> => {
   try {
     const response = await fetch('https://marketplace.d1.ey.com/api/use/deliverables/v1/deliverables', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${env.VITE_API_TOKEN}`,
         'Content-Type': 'application/json',
       },
     });
@@ -45,7 +40,7 @@ export const fetchDeliverableById = async (id: string): Promise<Deliverable | un
   try {
     const response = await fetch(`https://marketplace.d1.ey.com/api/use/deliverables/v1/deliverables/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${env.VITE_API_TOKEN}`,
         'Content-Type': 'application/json',
       },
     });
@@ -77,7 +72,7 @@ export const updateDeliverable = async (id: string, data: Deliverable): Promise<
     const response = await fetch(`https://marketplace.d1.ey.com/api/use/deliverables/v1/deliverables/${id}`, {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${env.VITE_API_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
