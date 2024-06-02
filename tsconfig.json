@@ -15,11 +15,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["jest", "@testing-library/jest-dom"],
+    "types": ["jest", "@testing-library/jest-dom", "node"],
     "baseUrl": "./",
     "paths": {
       "env": ["src/prod.env.ts"]
-    }
+    },
   },
   "include": ["src", "global.d.ts"],
   "exclude": ["node_modules"]
